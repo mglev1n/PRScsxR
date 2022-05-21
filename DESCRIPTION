@@ -11,3 +11,5 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
 Imports: 
     magrittr
+URL: https://github.com/mglev1n/PRScsxR
+BugReports: https://github.com/mglev1n/PRScsxR/issues
