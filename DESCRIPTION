@@ -1,11 +1,13 @@
 Package: PRScsxR
-Type: Package
-Title: What the Package Does (Title Case)
-Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Title: R-wrapper for PRScsx
+Version: 0.0.0.9000
+Authors@R: 
+    person("Michael", "Levin", , "mglev1n@gmail.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-9937-9932"))
+Description: What the package does (one paragraph).
+License: MIT + file LICENSE
 Encoding: UTF-8
-LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.2
+Imports: 
+    magrittr
