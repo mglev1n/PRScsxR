@@ -13,7 +13,8 @@ Imports:
     cli,
     glue,
     magrittr,
-    processx
+    processx,
+    reticulate
 URL: https://github.com/mglev1n/PRScsxR
 BugReports: https://github.com/mglev1n/PRScsxR/issues
 Suggests: 
