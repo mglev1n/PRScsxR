@@ -10,6 +10,19 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
 Imports: 
-    magrittr
+    cli,
+    glue,
+    magrittr,
+    processx
 URL: https://github.com/mglev1n/PRScsxR
 BugReports: https://github.com/mglev1n/PRScsxR/issues
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+Config/reticulate:
+  list(
+    packages = list(
+      list(package = "scipy"),
+      list(package = "h5py")
+    )
+  )

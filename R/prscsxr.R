@@ -17,11 +17,11 @@
 #' @param chrom The chromosome on which the model is fitted, separated by comma, e.g., --chrom=1,3,5. Parallel computation for the 22 autosomes is recommended. Default is iterating through 22 autosomes (can be time-consuming).
 #' @param meta If True, return combined SNP effect sizes across populations using an inverse-variance-weighted meta-analysis of the population-specific posterior effect size estimates. Default is True.
 #' @param seed Non-negative integer which seeds the random number generator.
+#' @param prscsx_bin Location of PRScsx binary
 #'
 #' @return
 #' @export
-#'
-#' @import
+#' @import reticulate
 
 prscsx <- function(ref_dir,
                    bim_prefix,
@@ -38,8 +38,46 @@ prscsx <- function(ref_dir,
                    thin = NULL,
                    chrom,
                    meta = TRUE,
-                   seed = NULL){
+                   seed = NULL,
+                   prscsx_bin,
+                   log_file){
 
+  # args <- glue::glue(
+  #           "python {shQuote(prscsx_bin)}
+  #           --ref_dir={shQuote(ref_dir)}
+  #           --bim_prefix={shQuote(bim_prefix)}
+  #           --sst_file={glue::glue_collapse(shQuote(sst_file), sep = ',')}
+  #           --n_gwas={glue::glue_collapse(n_gwas, sep = ',')}
+  #           --pop={glue::glue_collapse(pop, sep = ',')}
+  #           --out_dir={shQuote(out_dir)}
+  #           --out_name={out_name}
+  #           --chrom={chrom}
+  #           --meta={meta}")
 
+  args <- glue::glue(
+    "python {shQuote(prscsx_bin)} --ref_dir={shQuote(ref_dir)} --bim_prefix={shQuote(bim_prefix)} --sst_file={glue::glue_collapse(shQuote(sst_file), sep = ',')} --n_gwas={glue::glue_collapse(n_gwas, sep = ',')} --pop={glue::glue_collapse(pop, sep = ',')} --out_dir={shQuote(out_dir)} --out_name={out_name} --chrom={chrom} --meta={meta}")
+
+  # cli::cli_alert_info("Testing if python is available")
+  # reticulate::py_available()
+  cli::cli_alert_info("Running PRScsx with the following arguments:")
+  cli::cat_print(args)
+  # processx::run("which", "python")
+  # processx::run("python", c(prscsx_bin,
+  #                           "--ref_dir", ref_dir),
+  #               echo_cmd = TRUE)
+
+  system(args)
 
 }
+
+# res <- prscsx(ref_dir = "/scratch/Applications/PRScsx/LD-Reference",
+#               bim_prefix = "/scratch/Applications/PRScsx/PRScsx/test_data/test",
+#               sst_file = c('/scratch/Applications/PRScsx/PRScsx/test_data/EUR_sumstats.txt', '/scratch/Applications/PRScsx/PRScsx/test_data/EAS_sumstats.txt'),
+#               n_gwas = c("200000", "100000"),
+#               pop = c("EUR", "EAS"),
+#               out_dir = "/home/mglevin",
+#               out_name = "r_test",
+#               chrom = 22,
+#               prscsx_bin = "/scratch/Applications/PRScsx/PRScsx/PRScsx.py"
+# )
+
