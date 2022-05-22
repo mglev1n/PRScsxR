@@ -18,9 +18,11 @@ prscsx(
   n_iter = NULL,
   n_burnin = NULL,
   thin = NULL,
-  chrom,
+  chrom = NULL,
   meta = TRUE,
-  seed = NULL
+  seed = NULL,
+  prscsx_bin,
+  log_file
 )
 }
 \arguments{
@@ -55,9 +57,11 @@ prscsx(
 \item{meta}{If True, return combined SNP effect sizes across populations using an inverse-variance-weighted meta-analysis of the population-specific posterior effect size estimates. Default is True.}
 
 \item{seed}{Non-negative integer which seeds the random number generator.}
+
+\item{prscsx_bin}{Path to \code{PRScsx.py}}
 }
 \value{
-
+list containing status, stdout, stderr, and timeout status of the python process
 }
 \description{
 PRScsx

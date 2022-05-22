@@ -17,9 +17,9 @@
 #' @param chrom The chromosome on which the model is fitted, separated by comma, e.g., --chrom=1,3,5. Parallel computation for the 22 autosomes is recommended. Default is iterating through 22 autosomes (can be time-consuming).
 #' @param meta If True, return combined SNP effect sizes across populations using an inverse-variance-weighted meta-analysis of the population-specific posterior effect size estimates. Default is True.
 #' @param seed Non-negative integer which seeds the random number generator.
-#' @param prscsx_bin Location of PRScsx binary
+#' @param prscsx_bin Path to \code{PRScsx.py}
 #'
-#' @return
+#' @return list containing status, stdout, stderr, and timeout status of the python process
 #' @export
 #' @import reticulate
 
@@ -36,7 +36,7 @@ prscsx <- function(ref_dir,
                    n_iter = NULL,
                    n_burnin = NULL,
                    thin = NULL,
-                   chrom,
+                   chrom = NULL,
                    meta = TRUE,
                    seed = NULL,
                    prscsx_bin,
@@ -58,8 +58,8 @@ prscsx <- function(ref_dir,
                             "--pop", glue::glue_collapse(pop, sep = ','),
                             "--out_dir", out_dir,
                             "--out_name", out_name,
-                            "--chrom", chrom,
                             "--meta", meta,
+                            if(!is.null(chrom)){c("--chrom", glue::glue_collapse(chrom, sep = ','))},
                             if(!is.null(a)){c("--a", a)},
                             if(!is.null(b)){c("--b", b)},
                             if(!is.null(phi)){c("--phi", phi)},
@@ -72,15 +72,3 @@ prscsx <- function(ref_dir,
                 spinner = TRUE,
                 stdout_callback = cb)
 }
-
-# res <- prscsx(ref_dir = "/scratch/Applications/PRScsx/LD-Reference",
-#               bim_prefix = "/scratch/Applications/PRScsx/PRScsx/test_data/test.bim",
-#               sst_file = c('/scratch/Applications/PRScsx/PRScsx/test_data/EUR_sumstats.txt', '/scratch/Applications/PRScsx/PRScsx/test_data/EAS_sumstats.txt'),
-#               n_gwas = c("200000", "100000"),
-#               pop = c("EUR", "EAS"),
-#               out_dir = "/home/mglevin",
-#               out_name = "r_test",
-#               chrom = 22,
-#               prscsx_bin = "/scratch/Applications/PRScsx/PRScsx/PRScsx.py"
-# )
-
