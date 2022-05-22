@@ -42,36 +42,39 @@ prscsx <- function(ref_dir,
                    prscsx_bin,
                    log_file){
 
-  # args <- glue::glue(
-  #           "python {shQuote(prscsx_bin)}
-  #           --ref_dir={shQuote(ref_dir)}
-  #           --bim_prefix={shQuote(bim_prefix)}
-  #           --sst_file={glue::glue_collapse(shQuote(sst_file), sep = ',')}
-  #           --n_gwas={glue::glue_collapse(n_gwas, sep = ',')}
-  #           --pop={glue::glue_collapse(pop, sep = ',')}
-  #           --out_dir={shQuote(out_dir)}
-  #           --out_name={out_name}
-  #           --chrom={chrom}
-  #           --meta={meta}")
+  cli::cli_alert_info("Running PRScsx using the following python environment:")
+  python_env <- processx::run("which", "python")
+  cat(python_env$stdout)
 
-  args <- glue::glue(
-    "python {shQuote(prscsx_bin)} --ref_dir={shQuote(ref_dir)} --bim_prefix={shQuote(bim_prefix)} --sst_file={glue::glue_collapse(shQuote(sst_file), sep = ',')} --n_gwas={glue::glue_collapse(n_gwas, sep = ',')} --pop={glue::glue_collapse(pop, sep = ',')} --out_dir={shQuote(out_dir)} --out_name={out_name} --chrom={chrom} --meta={meta}")
+  cb <- function(line, proc) {
+      cat(line, "\n")
+    }
 
-  # cli::cli_alert_info("Testing if python is available")
-  # reticulate::py_available()
-  cli::cli_alert_info("Running PRScsx with the following arguments:")
-  cli::cat_print(args)
-  # processx::run("which", "python")
-  # processx::run("python", c(prscsx_bin,
-  #                           "--ref_dir", ref_dir),
-  #               echo_cmd = TRUE)
-
-  system(args)
-
+  processx::run("python", c(prscsx_bin,
+                            "--ref_dir", ref_dir,
+                            "--bim_prefix", bim_prefix,
+                            "--sst_file", glue::glue_collapse(sst_file, sep = ','),
+                            "--n_gwas", glue::glue_collapse(n_gwas, sep = ','),
+                            "--pop", glue::glue_collapse(pop, sep = ','),
+                            "--out_dir", out_dir,
+                            "--out_name", out_name,
+                            "--chrom", chrom,
+                            "--meta", meta,
+                            if(!is.null(a)){c("--a", a)},
+                            if(!is.null(b)){c("--b", b)},
+                            if(!is.null(phi)){c("--phi", phi)},
+                            if(!is.null(n_iter)){c("--n_iter", n_iter)},
+                            if(!is.null(n_burnin)){c("--n_burnin", n_burnin)},
+                            if(!is.null(thin)){c("--thin", thin)},
+                            if(!is.null(seed)){c("--seed", seed)}
+                            ),
+                echo_cmd = TRUE,
+                spinner = TRUE,
+                stdout_callback = cb)
 }
 
 # res <- prscsx(ref_dir = "/scratch/Applications/PRScsx/LD-Reference",
-#               bim_prefix = "/scratch/Applications/PRScsx/PRScsx/test_data/test",
+#               bim_prefix = "/scratch/Applications/PRScsx/PRScsx/test_data/test.bim",
 #               sst_file = c('/scratch/Applications/PRScsx/PRScsx/test_data/EUR_sumstats.txt', '/scratch/Applications/PRScsx/PRScsx/test_data/EAS_sumstats.txt'),
 #               n_gwas = c("200000", "100000"),
 #               pop = c("EUR", "EAS"),
