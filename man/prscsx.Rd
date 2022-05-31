@@ -21,8 +21,7 @@ prscsx(
   chrom = NULL,
   meta = TRUE,
   seed = NULL,
-  prscsx_bin,
-  log_file
+  prscsx_bin
 )
 }
 \arguments{

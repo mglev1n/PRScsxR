@@ -39,10 +39,11 @@ prscsx <- function(ref_dir,
                    chrom = NULL,
                    meta = TRUE,
                    seed = NULL,
-                   prscsx_bin,
-                   log_file){
+                   prscsx_bin) {
 
   cli::cli_alert_info("Running PRScsx using the following python environment:")
+  scipy_avail <- reticulate::py_module_available("scipy")
+  h5py_avail <- reticulate::py_module_available("h5py")
   python_env <- processx::run("which", "python")
   cat(python_env$stdout)
 
