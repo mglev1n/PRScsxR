@@ -22,4 +22,4 @@ You can install the development version of PRScsxR from
 devtools::install_github("mglev1n/PRScsxR")
 ```
 
-`PRScsx.py` requires on `scipy` and `h5py` as dependencies
+`PRScsx.py` requires `scipy` and `h5py` as dependencies
