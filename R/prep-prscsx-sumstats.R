@@ -12,23 +12,22 @@
 #' @return filename containing the prepared summary statistics
 #' @export
 #'
-#' @import data.table
-#' @import dplyr
-#' @import rlang
-#' @import stringr
 
 prep_prscsx_sumstats <- function(file, outfile, snp_col, effect_allele_col, other_allele_col, effect_col, pval_col, delim = "\t") {
-
-  fs::dir_create(dirname(outfile))
+  if (!fs::dir_exists(dirname(outfile))) {
+    cli::cli_progress_step("Creating output directory {.file {dirname(outfile)}}")
+    fs::dir_create(dirname(outfile), recurse = TRUE)
+  }
 
   sumstats <- data.table::fread(file, sep = delim) %>%
-    select(SNP = {{ snp_col }}, A1 = {{ effect_allele_col }}, A2 = {{ other_allele_col }}, BETA = {{ effect_col }}, P = {{ pval_col }}) %>%
-    filter(!is.na(SNP)) %>%
-    filter(!is.na(A1)) %>%
-    filter(!is.na(A2)) %>%
-    filter(str_detect(A1, "A|T|G|C")) %>%
-    filter(str_detect(A2, "A|T|G|C"))
+    dplyr::select(SNP = {{ snp_col }}, A1 = {{ effect_allele_col }}, A2 = {{ other_allele_col }}, BETA = {{ effect_col }}, P = {{ pval_col }}) %>%
+    dplyr::filter(!is.na(SNP)) %>%
+    dplyr::filter(!is.na(A1)) %>%
+    dplyr::filter(!is.na(A2)) %>%
+    dplyr::filter(stringr::str_detect(A1, "A|T|G|C")) %>%
+    dplyr::filter(stringr::str_detect(A2, "A|T|G|C"))
 
+  cli::cli_progress_step("Saving summary statistics to {.file {outfile}}")
   sumstats %>%
     data.table::fwrite(outfile, sep = "\t")
 

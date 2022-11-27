@@ -40,7 +40,6 @@ prscsx <- function(ref_dir,
                    meta = TRUE,
                    seed = NULL,
                    prscsx_bin) {
-
   cli::cli_alert_info("Running PRScsx using the following python environment:")
   scipy_avail <- reticulate::py_module_available("scipy")
   h5py_avail <- reticulate::py_module_available("h5py")
@@ -48,28 +47,53 @@ prscsx <- function(ref_dir,
   cat(python_env$stdout)
 
   cb <- function(line, proc) {
-      cat(line, "\n")
-    }
+    cat(line, "\n")
+  }
 
-  processx::run("python", c(prscsx_bin,
-                            "--ref_dir", ref_dir,
-                            "--bim_prefix", bim_prefix,
-                            "--sst_file", glue::glue_collapse(sst_file, sep = ','),
-                            "--n_gwas", glue::glue_collapse(n_gwas, sep = ','),
-                            "--pop", glue::glue_collapse(pop, sep = ','),
-                            "--out_dir", out_dir,
-                            "--out_name", out_name,
-                            "--meta", meta,
-                            if(!is.null(chrom)){c("--chrom", glue::glue_collapse(chrom, sep = ','))},
-                            if(!is.null(a)){c("--a", a)},
-                            if(!is.null(b)){c("--b", b)},
-                            if(!is.null(phi)){c("--phi", phi)},
-                            if(!is.null(n_iter)){c("--n_iter", n_iter)},
-                            if(!is.null(n_burnin)){c("--n_burnin", n_burnin)},
-                            if(!is.null(thin)){c("--thin", thin)},
-                            if(!is.null(seed)){c("--seed", seed)}
-                            ),
-                echo_cmd = TRUE,
-                spinner = TRUE,
-                stdout_callback = cb)
+  if (!fs::dir_exists(fs::path_real(out_dir))) {
+    cli::cli_progress_step("Creating output directory {.file {fs::path_real(out_dir)}}")
+    fs::dir_create(fs::path_real(out_dir), recurse = TRUE)
+  }
+
+  cli::cli_alert_info("Running PRScsx on: {.file {fs::path_file(sst_file)}}")
+  cli::cli_progress_step("Running PRScsx on: {.file {fs::path_file(sst_file)}}")
+  processx::run("python", c(
+    prscsx_bin,
+    "--ref_dir", ref_dir,
+    "--bim_prefix", bim_prefix,
+    "--sst_file", glue::glue_collapse(fs::path_real(sst_file), sep = ","),
+    "--n_gwas", glue::glue_collapse(n_gwas, sep = ","),
+    "--pop", glue::glue_collapse(pop, sep = ","),
+    "--out_dir", fs::path_real(out_dir),
+    "--out_name", out_name,
+    "--meta", meta,
+    if (!is.null(chrom)) {
+      c("--chrom", glue::glue_collapse(chrom, sep = ","))
+    },
+    if (!is.null(a)) {
+      c("--a", a)
+    },
+    if (!is.null(b)) {
+      c("--b", b)
+    },
+    if (!is.null(phi)) {
+      c("--phi", phi)
+    },
+    if (!is.null(n_iter)) {
+      c("--n_iter", n_iter)
+    },
+    if (!is.null(n_burnin)) {
+      c("--n_burnin", n_burnin)
+    },
+    if (!is.null(thin)) {
+      c("--thin", thin)
+    },
+    if (!is.null(seed)) {
+      c("--seed", seed)
+    }
+  ),
+  echo_cmd = TRUE,
+  spinner = TRUE,
+  stdout_callback = cb
+  )
 }

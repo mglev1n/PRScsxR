@@ -1,5 +1,4 @@
 test_that("preparing sumstats works", {
-
   temp_file <- fs::file_temp()
 
   sumstats_prepped <- PRScsxR::prep_prscsx_sumstats(
@@ -12,8 +11,8 @@ test_that("preparing sumstats works", {
     pval_col = "P"
   )
 
-  sumstats_prepped_df <- fread(temp_file)
-  unprepped_sumstats <- fread("/scratch/Applications/PRScsx/PRScsx/test_data/EUR_sumstats.txt")
+  sumstats_prepped_df <- data.table::fread(temp_file)
+  unprepped_sumstats <- data.table::fread("/scratch/Applications/PRScsx/PRScsx/test_data/EUR_sumstats.txt")
 
   expect_equal(sumstats_prepped_df, unprepped_sumstats)
 })
