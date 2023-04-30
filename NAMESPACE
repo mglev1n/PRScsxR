@@ -3,5 +3,6 @@
 export("%>%")
 export(prep_prscsx_sumstats)
 export(prscsx)
+export(prscsx_jl)
 import(reticulate)
 importFrom(magrittr,"%>%")
