@@ -29,6 +29,7 @@ Config/reticulate:
   list(
     packages = list(
       list(package = "scipy"),
-      list(package = "h5py")
+      list(package = "h5py"),
+      list(package = "jax")
     )
   )
